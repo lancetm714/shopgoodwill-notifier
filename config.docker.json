@@ -1,0 +1,13 @@
+{
+  "pollIntervalSeconds": 300,
+  "pageSize": 40,
+  "maxPages": 3,
+  "seenFile": "data/seen_listings.json",
+  "historyFile": "data/history.json",
+  "queries": [
+    {
+      "name": "example",
+      "searchText": "example search"
+    }
+  ]
+}

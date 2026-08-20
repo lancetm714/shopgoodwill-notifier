@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopGoodwill Notifier</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>ShopGoodwill Notifier</h1>
+      <div class="status-line">
+        <span id="status-badge" class="badge">…</span>
+        <span id="status-detail">Loading…</span>
+      </div>
+      <div class="topbar-actions">
+        <button id="check-now" class="primary">Check now</button>
+        <button id="toggle-monitor" class="secondary">Pause</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel" id="queries-panel">
+        <div class="panel-head">
+          <h2>Searches</h2>
+          <button id="add-query" class="secondary">+ Add search</button>
+        </div>
+        <div id="query-form" class="form hidden">
+          <h3 id="query-form-title">Add search</h3>
+          <input type="hidden" id="q-index" />
+          <div class="grid">
+            <label>
+              Name
+              <input id="q-name" placeholder="e.g. canon-film-cameras" />
+            </label>
+            <label>
+              Search terms
+              <input id="q-searchText" placeholder="e.g. canon film camera" />
+            </label>
+            <label>
+              Min price
+              <input id="q-lowPrice" type="number" min="0" step="0.01" placeholder="0" />
+            </label>
+            <label>
+              Max price
+              <input id="q-highPrice" type="number" min="0" step="0.01" placeholder="999999" />
+            </label>
+            <label>
+              Category IDs (comma-separated)
+              <input id="q-categories" placeholder="optional" />
+            </label>
+            <label>
+              Seller IDs (comma-separated)
+              <input id="q-sellers" placeholder="optional" />
+            </label>
+            <label>
+              Max pages
+              <input id="q-maxPages" type="number" min="1" placeholder="default" />
+            </label>
+          </div>
+          <div class="checks">
+            <label><input type="checkbox" id="q-buyNow" /> Buy-it-now only</label>
+            <label><input type="checkbox" id="q-pickup" /> Pickup only</label>
+            <label><input type="checkbox" id="q-oneCent" /> $0.01 shipping only</label>
+            <label><input type="checkbox" id="q-desc" /> Search descriptions</label>
+          </div>
+          <div class="form-actions">
+            <button id="save-query" class="primary">Save</button>
+            <button id="cancel-query" class="ghost">Cancel</button>
+          </div>
+        </div>
+        <table class="table" id="queries-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Search</th>
+              <th>Price range</th>
+              <th>Last check</th>
+              <th>New</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="queries-body"></tbody>
+        </table>
+        <p id="queries-empty" class="empty hidden">No searches yet. Add one to start monitoring.</p>
+      </section>
+
+      <section class="panel" id="settings-panel">
+        <div class="panel-head">
+          <h2>Settings</h2>
+          <button id="save-settings" class="primary">Save settings</button>
+        </div>
+        <div class="grid">
+          <label>
+            Poll interval (seconds)
+            <input id="s-interval" type="number" min="30" />
+          </label>
+          <label>
+            Page size
+            <input id="s-pageSize" type="number" min="1" />
+          </label>
+          <label>
+            Max pages
+            <input id="s-maxPages" type="number" min="1" />
+          </label>
+        </div>
+        <h3>Email (SMTP)</h3>
+        <div class="grid">
+          <label>
+            Host
+            <input id="s-host" placeholder="smtp.gmail.com" />
+          </label>
+          <label>
+            Port
+            <input id="s-port" type="number" min="1" />
+          </label>
+          <label>
+            Secure (SSL/TLS)
+            <input id="s-secure" type="checkbox" class="inline-check" />
+          </label>
+          <label>
+            Username
+            <input id="s-user" autocomplete="off" />
+          </label>
+          <label>
+            Password
+            <input id="s-pass" type="password" autocomplete="new-password" placeholder="leave blank to keep current" />
+          </label>
+          <label>
+            From
+            <input id="s-from" placeholder="you@gmail.com" />
+          </label>
+          <label>
+            To
+            <input id="s-to" placeholder="you@gmail.com" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="test-smtp" class="secondary">Test SMTP</button>
+          <button id="test-email" class="secondary">Send test email</button>
+          <span id="smtp-result"></span>
+        </div>
+      </section>
+
+      <section class="panel" id="history-panel">
+        <div class="panel-head">
+          <h2>Recent finds</h2>
+          <button id="clear-history" class="ghost">Clear</button>
+        </div>
+        <ul id="history-list" class="history"></ul>
+        <p id="history-empty" class="empty hidden">No new listings recorded yet.</p>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

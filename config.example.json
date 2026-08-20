@@ -1,0 +1,28 @@
+{
+  "pollIntervalSeconds": 300,
+  "pageSize": 40,
+  "maxPages": 3,
+  "seenFile": "data/seen_listings.json",
+  "historyFile": "data/history.json",
+  "smtp": {
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "secure": false,
+    "user": "you@gmail.com",
+    "pass": "your-app-password",
+    "from": "you@gmail.com",
+    "to": "you@gmail.com"
+  },
+  "queries": [
+    {
+      "name": "canon-film-cameras",
+      "searchText": "canon film camera"
+    },
+    {
+      "name": "lego-starfighter",
+      "searchText": "lego starfighter",
+      "lowPrice": 0,
+      "highPrice": 100
+    }
+  ]
+}

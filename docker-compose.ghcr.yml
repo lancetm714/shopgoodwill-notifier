@@ -1,0 +1,16 @@
+# Portainer / GHCR stack.
+# Paste this into Portainer -> Stacks -> Add stack (or use the compose file).
+# Replace OWNER/REPO with your GitHub owner and repository name (lowercase).
+services:
+  shopgoodwill-notifier:
+    image: ghcr.io/OWNER/REPO:latest
+    container_name: shopgoodwill-notifier
+    restart: unless-stopped
+    ports:
+      - "7823:7823"
+    environment:
+      - TZ=America/New_York
+      - PORT=7823
+    volumes:
+      - ./config.json:/app/config.json
+      - ./data:/app/data
