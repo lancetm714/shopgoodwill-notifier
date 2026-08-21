@@ -16,6 +16,7 @@ export interface QueryConfig {
 }
 
 export interface SmtpSettings {
+  enabled?: boolean;
   host?: string;
   port?: number;
   secure?: boolean;
@@ -25,6 +26,12 @@ export interface SmtpSettings {
   to?: string;
 }
 
+export interface TelegramSettings {
+  enabled?: boolean;
+  botToken?: string;
+  chatId?: string;
+}
+
 export interface AppConfig {
   pollIntervalSeconds: number;
   pageSize: number;
@@ -32,7 +39,13 @@ export interface AppConfig {
   seenFile: string;
   historyFile: string;
   smtp?: SmtpSettings;
+  telegram?: TelegramSettings;
   queries: QueryConfig[];
+}
+
+export interface Notifier {
+  readonly kind: "email" | "telegram";
+  sendNewListings(query: QueryConfig, newItems: ItemListing[]): Promise<void>;
 }
 
 export interface ItemListing {

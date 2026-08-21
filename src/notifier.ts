@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
-import type { AppConfig, ItemListing, QueryConfig } from "./types.js";
+import type { AppConfig, ItemListing, Notifier, QueryConfig } from "./types.js";
 import { listingUrl } from "./shopgoodwill.js";
 
 export interface SmtpConfig {
@@ -25,6 +25,9 @@ export function resolveSmtp(
   env: NodeJS.ProcessEnv,
 ): SmtpConfig | null {
   const s = config.smtp ?? {};
+  if (s.enabled === false) {
+    return null;
+  }
   const host = s.host ?? env.SMTP_HOST;
   const to = s.to ?? env.MAIL_TO;
   const from = s.from ?? env.MAIL_FROM ?? s.user ?? env.SMTP_USER;
@@ -92,7 +95,8 @@ export async function sendTestEmail(
   }
 }
 
-export class EmailNotifier {
+export class EmailNotifier implements Notifier {
+  readonly kind = "email" as const;
   private readonly transporter: Transporter;
   private readonly config: SmtpConfig;
 

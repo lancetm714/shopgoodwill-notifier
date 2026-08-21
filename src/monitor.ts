@@ -3,11 +3,13 @@ import { ConfigManager, maxPagesFor } from "./config.js";
 import { searchListings, listingUrl } from "./shopgoodwill.js";
 import { SeenStore } from "./seenStore.js";
 import { HistoryStore } from "./historyStore.js";
-import { buildNotifier, resolveSmtp, EmailNotifier } from "./notifier.js";
+import { buildNotifier, resolveSmtp } from "./notifier.js";
+import { buildTelegramNotifier, resolveTelegram } from "./telegram.js";
 import type {
   AppConfig,
   HistoryEntry,
   ItemListing,
+  Notifier,
   QueryConfig,
   QueryStatus,
 } from "./types.js";
@@ -19,6 +21,7 @@ export interface MonitorOverview {
   nextCheckAt: string | null;
   pollIntervalSeconds: number;
   smtpConfigured: boolean;
+  telegramConfigured: boolean;
   queries: QueryStatus[];
 }
 
@@ -77,6 +80,7 @@ export class Monitor {
       nextCheckAt,
       pollIntervalSeconds: config.pollIntervalSeconds,
       smtpConfigured: resolveSmtp(config, this.env) !== null,
+      telegramConfigured: resolveTelegram(config, this.env) !== null,
       queries: config.queries.map((q) => this.statusFor(q)),
     };
   }
@@ -93,10 +97,14 @@ export class Monitor {
   private async runCheck(): Promise<void> {
     this.checking = true;
     const config = this.configManager.get();
-    const notifier = buildNotifier(config, this.env);
+    const notifiers: Notifier[] = [];
+    const email = buildNotifier(config, this.env);
+    if (email) notifiers.push(email);
+    const telegram = buildTelegramNotifier(config, this.env);
+    if (telegram) notifiers.push(telegram);
     try {
       for (const query of config.queries) {
-        await this.checkQuery(query, config, notifier);
+        await this.checkQuery(query, config, notifiers);
       }
       this.lastCheckAt = new Date().toISOString();
     } finally {
@@ -144,7 +152,7 @@ export class Monitor {
   private async checkQuery(
     query: QueryConfig,
     config: AppConfig,
-    notifier: EmailNotifier | null,
+    notifiers: Notifier[],
   ): Promise<void> {
     const status = this.statusFor(query);
     try {
@@ -175,13 +183,13 @@ export class Monitor {
 
       if (newItems.length > 0) {
         let notified = false;
-        if (notifier) {
+        for (const notifier of notifiers) {
           try {
             await notifier.sendNewListings(query, newItems);
             notified = true;
           } catch (err) {
             console.error(
-              `[${query.name}] Email failed: ${(err as Error).message}`,
+              `[${query.name}] ${notifier.kind} notification failed: ${(err as Error).message}`,
             );
           }
         }

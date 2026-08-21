@@ -1,6 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { AppConfig, QueryConfig, SmtpSettings } from "./types.js";
+import type {
+  AppConfig,
+  QueryConfig,
+  SmtpSettings,
+  TelegramSettings,
+} from "./types.js";
 
 const DEFAULT_POLL_INTERVAL_SECONDS = 300;
 const DEFAULT_PAGE_SIZE = 40;
@@ -31,6 +36,7 @@ function applyDefaults(raw: Record<string, unknown>): AppConfig {
     historyFile:
       (raw.historyFile as string | undefined) ?? "data/history.json",
     smtp: (raw.smtp as SmtpSettings | undefined) ?? {},
+    telegram: (raw.telegram as TelegramSettings | undefined) ?? {},
     queries,
   };
 }
@@ -82,6 +88,7 @@ export class ConfigManager {
     pageSize?: number;
     maxPages?: number;
     smtp?: SmtpSettings;
+    telegram?: TelegramSettings;
   }): void {
     if (settings.pollIntervalSeconds !== undefined) {
       this.config.pollIntervalSeconds = settings.pollIntervalSeconds;
@@ -94,6 +101,9 @@ export class ConfigManager {
     }
     if (settings.smtp !== undefined) {
       this.config.smtp = settings.smtp;
+    }
+    if (settings.telegram !== undefined) {
+      this.config.telegram = settings.telegram;
     }
     this.save();
   }

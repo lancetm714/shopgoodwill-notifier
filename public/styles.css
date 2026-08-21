@@ -40,6 +40,38 @@ body {
   margin: 0;
 }
 
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.nav a:hover {
+  color: var(--text);
+}
+
+.nav a.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.hint a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
 .status-line {
   display: flex;
   align-items: center;
@@ -188,6 +220,21 @@ input:focus {
   margin-top: 2px;
 }
 
+.toggle-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.toggle-label .inline-check {
+  margin-top: 0;
+}
+
 .checks {
   display: flex;
   flex-wrap: wrap;
@@ -312,14 +359,17 @@ input:focus {
   color: var(--warn);
 }
 
-#smtp-result {
+#smtp-result,
+#telegram-result {
   font-size: 13px;
 }
 
-#smtp-result.ok {
+#smtp-result.ok,
+#telegram-result.ok {
   color: var(--ok);
 }
 
-#smtp-result.err {
+#smtp-result.err,
+#telegram-result.err {
   color: var(--danger);
 }

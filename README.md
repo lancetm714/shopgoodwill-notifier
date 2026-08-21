@@ -1,18 +1,19 @@
 # ShopGoodwill Notifier
 
-Polls the [ShopGoodwill.com](https://shopgoodwill.com) search API and emails you
-when it finds new listings matching your search terms. Includes a **web console**
-for managing searches, settings, and reviewing finds.
+Polls the [ShopGoodwill.com](https://shopgoodwill.com) search API and notifies
+you when it finds new listings matching your search terms. Includes a **web
+console** for managing searches, settings, and reviewing finds.
 
 ## Features
 
 - Monitors multiple search queries against ShopGoodwill's buyer API
   (`POST https://buyerapi.shopgoodwill.com/api/Search/ItemListing`).
 - Tracks every listing ID it has already seen, so only *new* listings trigger
-  an email. The first run records a baseline and does not notify.
-- Sends email alerts via SMTP (nodemailer).
-- Web console to add/edit/delete searches, configure SMTP and polling, trigger
-  a manual check, pause/resume the monitor, and review recent finds.
+  a notification. The first run records a baseline and does not notify.
+- Sends alerts via **email** (SMTP) and/or **Telegram**.
+- Web console with two pages: **Searches** (add/edit/delete searches, review
+  finds, run manual checks, pause/resume) and **Settings** (polling, email,
+  Telegram).
 
 ## Setup
 
@@ -59,19 +60,29 @@ Both accept `--config /path/to/config.json` to use a different config file.
 | `seenFile`            | Seen-listing state file                            | `data/seen_listings.json` |
 | `historyFile`         | Record of new listings found                       | `data/history.json` |
 | `smtp`                | Email settings (see below)                         | `{}`    |
+| `telegram`            | Telegram settings (see below)                      | `{}`    |
 | `queries`             | Array of search queries (see below)                | —       |
 
 `smtp` (also settable via `.env` as a fallback):
 
-| Key      | Description                    |
-| -------- | ------------------------------ |
-| `host`   | SMTP host (e.g. `smtp.gmail.com`) |
-| `port`   | SMTP port (e.g. `587`)         |
-| `secure` | `true` for SSL/TLS             |
-| `user`   | SMTP username                  |
-| `pass`   | SMTP password / app password   |
-| `from`   | Sender address                 |
-| `to`     | Recipient address              |
+| Key       | Description                    |
+| --------- | ------------------------------ |
+| `enabled` | `false` to turn off email alerts while keeping settings |
+| `host`    | SMTP host (e.g. `smtp.gmail.com`) |
+| `port`    | SMTP port (e.g. `587`)         |
+| `secure`  | `true` for SSL/TLS             |
+| `user`    | SMTP username                  |
+| `pass`    | SMTP password / app password   |
+| `from`    | Sender address                 |
+| `to`      | Recipient address              |
+
+`telegram` (also settable via `.env` as a fallback):
+
+| Key        | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `enabled`  | `false` to turn off Telegram alerts while keeping settings |
+| `botToken` | Bot token from [@BotFather](https://t.me/BotFather) |
+| `chatId`   | Chat to send to (get yours from [@userinfobot](https://t.me/userinfobot)) |
 
 Each `query` supports:
 

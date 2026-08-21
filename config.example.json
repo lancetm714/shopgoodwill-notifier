@@ -5,6 +5,7 @@
   "seenFile": "data/seen_listings.json",
   "historyFile": "data/history.json",
   "smtp": {
+    "enabled": true,
     "host": "smtp.gmail.com",
     "port": 587,
     "secure": false,
@@ -12,6 +13,11 @@
     "pass": "your-app-password",
     "from": "you@gmail.com",
     "to": "you@gmail.com"
+  },
+  "telegram": {
+    "enabled": true,
+    "botToken": "123456:ABC-your-bot-token",
+    "chatId": "123456789"
   },
   "queries": [
     {

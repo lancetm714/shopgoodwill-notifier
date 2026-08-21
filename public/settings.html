@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings — ShopGoodwill Notifier</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>ShopGoodwill Notifier</h1>
+      <nav class="nav">
+        <a href="/">Searches</a>
+        <a href="/settings.html" class="active">Settings</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>General</h2>
+        </div>
+        <div class="grid">
+          <label>
+            Poll interval (seconds)
+            <input id="s-interval" type="number" min="30" />
+          </label>
+          <label>
+            Page size
+            <input id="s-pageSize" type="number" min="1" />
+          </label>
+          <label>
+            Max pages
+            <input id="s-maxPages" type="number" min="1" />
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Email (SMTP)</h2>
+          <div class="form-actions">
+            <button id="test-smtp" class="secondary">Test SMTP</button>
+            <button id="test-email" class="secondary">Send test email</button>
+          </div>
+        </div>
+        <label class="toggle-label">
+          <input id="s-enabled" type="checkbox" class="inline-check" />
+          Enable email notifications
+        </label>
+        <div class="grid">
+          <label>
+            Host
+            <input id="s-host" placeholder="smtp.gmail.com" />
+          </label>
+          <label>
+            Port
+            <input id="s-port" type="number" min="1" />
+          </label>
+          <label>
+            Secure (SSL/TLS)
+            <input id="s-secure" type="checkbox" class="inline-check" />
+          </label>
+          <label>
+            Username
+            <input id="s-user" autocomplete="off" />
+          </label>
+          <label>
+            Password
+            <input id="s-pass" type="password" autocomplete="new-password" placeholder="leave blank to keep current" />
+          </label>
+          <label>
+            From
+            <input id="s-from" placeholder="you@gmail.com" />
+          </label>
+          <label>
+            To
+            <input id="s-to" placeholder="you@gmail.com" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <span id="smtp-result"></span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Telegram</h2>
+          <div class="form-actions">
+            <button id="test-telegram" class="secondary">Send test message</button>
+          </div>
+        </div>
+        <p class="hint">
+          Create a bot with <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a>
+          to get a token, then message your bot once and use your chat ID. You can get
+          your chat ID from <a href="https://t.me/userinfobot" target="_blank" rel="noopener">@userinfobot</a>.
+        </p>
+        <label class="toggle-label">
+          <input id="t-enabled" type="checkbox" class="inline-check" />
+          Enable Telegram notifications
+        </label>
+        <div class="grid">
+          <label>
+            Bot token
+            <input id="t-token" type="password" autocomplete="new-password" placeholder="123456:ABC-…" />
+          </label>
+          <label>
+            Chat ID
+            <input id="t-chatId" placeholder="your chat id" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <span id="telegram-result"></span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2></h2>
+          <button id="save-settings" class="primary">Save settings</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="/common.js"></script>
+    <script src="/settings.js"></script>
+  </body>
+</html>

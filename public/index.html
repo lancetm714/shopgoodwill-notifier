@@ -10,6 +10,10 @@
   <body>
     <header class="topbar">
       <h1>ShopGoodwill Notifier</h1>
+      <nav class="nav">
+        <a href="/" class="active">Searches</a>
+        <a href="/settings.html">Settings</a>
+      </nav>
       <div class="status-line">
         <span id="status-badge" class="badge">…</span>
         <span id="status-detail">Loading…</span>
@@ -86,63 +90,6 @@
         <p id="queries-empty" class="empty hidden">No searches yet. Add one to start monitoring.</p>
       </section>
 
-      <section class="panel" id="settings-panel">
-        <div class="panel-head">
-          <h2>Settings</h2>
-          <button id="save-settings" class="primary">Save settings</button>
-        </div>
-        <div class="grid">
-          <label>
-            Poll interval (seconds)
-            <input id="s-interval" type="number" min="30" />
-          </label>
-          <label>
-            Page size
-            <input id="s-pageSize" type="number" min="1" />
-          </label>
-          <label>
-            Max pages
-            <input id="s-maxPages" type="number" min="1" />
-          </label>
-        </div>
-        <h3>Email (SMTP)</h3>
-        <div class="grid">
-          <label>
-            Host
-            <input id="s-host" placeholder="smtp.gmail.com" />
-          </label>
-          <label>
-            Port
-            <input id="s-port" type="number" min="1" />
-          </label>
-          <label>
-            Secure (SSL/TLS)
-            <input id="s-secure" type="checkbox" class="inline-check" />
-          </label>
-          <label>
-            Username
-            <input id="s-user" autocomplete="off" />
-          </label>
-          <label>
-            Password
-            <input id="s-pass" type="password" autocomplete="new-password" placeholder="leave blank to keep current" />
-          </label>
-          <label>
-            From
-            <input id="s-from" placeholder="you@gmail.com" />
-          </label>
-          <label>
-            To
-            <input id="s-to" placeholder="you@gmail.com" />
-          </label>
-        </div>
-        <div class="form-actions">
-          <button id="test-smtp" class="secondary">Test SMTP</button>
-          <button id="test-email" class="secondary">Send test email</button>
-          <span id="smtp-result"></span>
-        </div>
-      </section>
-
       <section class="panel" id="history-panel">
         <div class="panel-head">
           <h2>Recent finds</h2>
@@ -153,6 +100,7 @@
       </section>
     </main>
 
+    <script src="/common.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

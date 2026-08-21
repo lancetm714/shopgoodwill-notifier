@@ -8,7 +8,13 @@ import { SeenStore } from "./seenStore.js";
 import { HistoryStore } from "./historyStore.js";
 import { Monitor } from "./monitor.js";
 import { verifySmtp, sendTestEmail } from "./notifier.js";
-import type { AppConfig, QueryConfig, SmtpSettings } from "./types.js";
+import { sendTestTelegram } from "./telegram.js";
+import type {
+  AppConfig,
+  QueryConfig,
+  SmtpSettings,
+  TelegramSettings,
+} from "./types.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, "..");
@@ -85,6 +91,16 @@ function maskedSmtp(smtp: SmtpSettings): Record<string, unknown> {
     to: smtp.to ?? "",
     pass: "",
     passSet: Boolean(smtp.pass),
+    enabled: smtp.enabled !== false,
+  };
+}
+
+function maskedTelegram(tg: TelegramSettings): Record<string, unknown> {
+  return {
+    botToken: "",
+    botTokenSet: Boolean(tg.botToken),
+    chatId: tg.chatId ?? "",
+    enabled: tg.enabled !== false,
   };
 }
 
@@ -106,8 +122,27 @@ function resolveTestConfig(body: unknown): AppConfig {
         : currentSmtp.pass,
     from: smtp.from ?? currentSmtp.from,
     to: smtp.to ?? currentSmtp.to,
+    enabled: true,
   };
   return { ...current, smtp: merged };
+}
+
+function resolveTelegramTestConfig(body: unknown): AppConfig {
+  const { telegram } = (body ?? {}) as { telegram?: TelegramSettings };
+  const current = manager.get();
+  if (!telegram) {
+    return current;
+  }
+  const currentTg = current.telegram ?? {};
+  const merged: TelegramSettings = {
+    botToken:
+      typeof telegram.botToken === "string" && telegram.botToken.trim() !== ""
+        ? telegram.botToken
+        : currentTg.botToken,
+    chatId: telegram.chatId ?? currentTg.chatId,
+    enabled: true,
+  };
+  return { ...current, telegram: merged };
 }
 
 app.get(
@@ -174,6 +209,7 @@ app.get(
       pageSize: config.pageSize,
       maxPages: config.maxPages,
       smtp: maskedSmtp(config.smtp ?? {}),
+      telegram: maskedTelegram(config.telegram ?? {}),
     });
   }),
 );
@@ -197,6 +233,19 @@ app.put(
           : currentSmtp.pass,
       from: smtpIn.from ?? currentSmtp.from,
       to: smtpIn.to ?? currentSmtp.to,
+      enabled: smtpIn.enabled ?? currentSmtp.enabled,
+    };
+
+    const telegramIn = (body.telegram ?? {}) as TelegramSettings;
+    const currentTg = current.telegram ?? {};
+    const telegram: TelegramSettings = {
+      botToken:
+        typeof telegramIn.botToken === "string" &&
+        telegramIn.botToken.trim() !== ""
+          ? telegramIn.botToken
+          : currentTg.botToken,
+      chatId: telegramIn.chatId ?? currentTg.chatId,
+      enabled: telegramIn.enabled ?? currentTg.enabled,
     };
 
     manager.setSettings({
@@ -207,13 +256,16 @@ app.put(
       pageSize: typeof body.pageSize === "number" ? body.pageSize : undefined,
       maxPages: typeof body.maxPages === "number" ? body.maxPages : undefined,
       smtp,
+      telegram,
     });
 
+    const saved = manager.get();
     res.json({
-      pollIntervalSeconds: manager.get().pollIntervalSeconds,
-      pageSize: manager.get().pageSize,
-      maxPages: manager.get().maxPages,
-      smtp: maskedSmtp(manager.get().smtp ?? {}),
+      pollIntervalSeconds: saved.pollIntervalSeconds,
+      pageSize: saved.pageSize,
+      maxPages: saved.maxPages,
+      smtp: maskedSmtp(saved.smtp ?? {}),
+      telegram: maskedTelegram(saved.telegram ?? {}),
     });
   }),
 );
@@ -230,6 +282,17 @@ app.post(
   "/api/smtp/test-email",
   asyncHandler(async (req, res) => {
     const result = await sendTestEmail(resolveTestConfig(req.body), process.env);
+    res.json(result);
+  }),
+);
+
+app.post(
+  "/api/telegram/test",
+  asyncHandler(async (req, res) => {
+    const result = await sendTestTelegram(
+      resolveTelegramTestConfig(req.body),
+      process.env,
+    );
     res.json(result);
   }),
 );
