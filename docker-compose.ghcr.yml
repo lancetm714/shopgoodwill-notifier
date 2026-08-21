@@ -1,6 +1,11 @@
 # Portainer / GHCR stack.
-# Paste this into Portainer -> Stacks -> Add stack (or use the compose file).
-# Replace OWNER/REPO with your GitHub owner and repository name (lowercase).
+# Paste this into Portainer -> Stacks -> Add stack.
+#
+# 1. Replace OWNER/REPO with your GitHub owner and repo (lowercase).
+# 2. Change /volume1/docker/shopgoodwill-notifier to a real path on your NAS.
+# 3. Before deploying, create that folder, a file `config.json` inside it
+#    (content `{}` is fine to start), and an empty `data` subfolder.
+#    Docker auto-creates directories but NOT files, so config.json must exist.
 services:
   shopgoodwill-notifier:
     image: ghcr.io/OWNER/REPO:latest
@@ -12,5 +17,5 @@ services:
       - TZ=America/New_York
       - PORT=7823
     volumes:
-      - ./config.json:/app/config.json
-      - ./data:/app/data
+      - /volume1/docker/shopgoodwill-notifier/config.json:/app/config.json
+      - /volume1/docker/shopgoodwill-notifier/data:/app/data

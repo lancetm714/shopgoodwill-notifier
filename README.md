@@ -151,17 +151,21 @@ multi-arch image (`linux/amd64` + `linux/arm64`) and pushes it to
 
 ### Deploy in Portainer
 
-1. On the NAS, create `/volume1/docker/shopgoodwill-notifier/` with your
-   `config.json` and an empty `data/` folder.
+1. On the NAS, create a folder (e.g. `/volume1/docker/shopgoodwill-notifier`),
+   and inside it:
+   - a file `config.json` containing `{}` (empty config — you'll configure the
+     rest in the console), or your full config copied from `config.example.json`
+   - an empty `data` folder
+   > Docker auto-creates directories but **not** files, so `config.json` must
+   > already exist or the bind mount fails.
 2. In Portainer, add your GitHub container registry
    (**Registries** → `ghcr.io`, username = your GitHub username, password = a
-   GitHub Personal Access Token with `read:packages`).
+   GitHub Personal Access Token with `read:packages`). Skip this if the image is
+   public.
 3. **Stacks** → **Add stack**, and paste the contents of
-   `docker-compose.ghcr.yml` (edit `OWNER/REPO`). Deploy.
-4. Console: `http://<NAS-IP>:7823`.
-
-> Portainer can also pull anonymously from *public* ghcr.io images. If your repo
-> is public, no registry credentials are needed — just skip step 2.
+   `docker-compose.ghcr.yml` (edit `OWNER/REPO` and the volume path). Deploy.
+4. Console: `http://<NAS-IP>:7823`. Add your searches and SMTP there; they are
+   written to the mounted `config.json` and persist across updates.
 
 ### Secrets stay local
 
