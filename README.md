@@ -6,9 +6,12 @@ console** for managing searches, settings, and reviewing finds.
 
 ## What's New
 
+- **v1.1.0** — Adds **ntfy** push notifications (ntfy.sh or self-hosted),
+  configurable from the Settings page, `config.json`, or `.env`. See the
+  [changelog](CHANGELOG.md) for details.
 - **v1.0.0** — First release. Adds the web console (Searches + Settings pages),
   **Telegram** notifications alongside email, and per-channel enable/disable
-  toggles. See the [changelog](CHANGELOG.md) for details.
+  toggles.
 
 ## Screenshots
 
