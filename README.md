@@ -4,6 +4,18 @@ Polls the [ShopGoodwill.com](https://shopgoodwill.com) search API and notifies
 you when it finds new listings matching your search terms. Includes a **web
 console** for managing searches, settings, and reviewing finds.
 
+## What's New
+
+- **v1.0.0** — First release. Adds the web console (Searches + Settings pages),
+  **Telegram** notifications alongside email, and per-channel enable/disable
+  toggles. See the [changelog](CHANGELOG.md) for details.
+
+## Screenshots
+
+| Searches | Settings |
+| --- | --- |
+| ![Searches page](screenshots/searches.png) | ![Settings page](screenshots/settings.png) |
+
 ## Features
 
 - Monitors multiple search queries against ShopGoodwill's buyer API
