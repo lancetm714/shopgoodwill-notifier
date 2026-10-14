@@ -32,6 +32,13 @@ export interface TelegramSettings {
   chatId?: string;
 }
 
+export interface NtfySettings {
+  enabled?: boolean;
+  server?: string;
+  topic?: string;
+  token?: string;
+}
+
 export interface AppConfig {
   pollIntervalSeconds: number;
   pageSize: number;
@@ -40,11 +47,12 @@ export interface AppConfig {
   historyFile: string;
   smtp?: SmtpSettings;
   telegram?: TelegramSettings;
+  ntfy?: NtfySettings;
   queries: QueryConfig[];
 }
 
 export interface Notifier {
-  readonly kind: "email" | "telegram";
+  readonly kind: "email" | "telegram" | "ntfy";
   sendNewListings(query: QueryConfig, newItems: ItemListing[]): Promise<void>;
 }
 

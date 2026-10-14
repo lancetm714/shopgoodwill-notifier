@@ -22,10 +22,11 @@ console** for managing searches, settings, and reviewing finds.
   (`POST https://buyerapi.shopgoodwill.com/api/Search/ItemListing`).
 - Tracks every listing ID it has already seen, so only *new* listings trigger
   a notification. The first run records a baseline and does not notify.
-- Sends alerts via **email** (SMTP) and/or **Telegram**.
+- Sends alerts via **email** (SMTP), **Telegram**, and/or **ntfy** push
+  notifications.
 - Web console with two pages: **Searches** (add/edit/delete searches, review
   finds, run manual checks, pause/resume) and **Settings** (polling, email,
-  Telegram).
+  Telegram, ntfy).
 
 ## Setup
 
@@ -73,6 +74,7 @@ Both accept `--config /path/to/config.json` to use a different config file.
 | `historyFile`         | Record of new listings found                       | `data/history.json` |
 | `smtp`                | Email settings (see below)                         | `{}`    |
 | `telegram`            | Telegram settings (see below)                      | `{}`    |
+| `ntfy`                | ntfy push settings (see below)                     | `{}`    |
 | `queries`             | Array of search queries (see below)                | —       |
 
 `smtp` (also settable via `.env` as a fallback):
@@ -95,6 +97,15 @@ Both accept `--config /path/to/config.json` to use a different config file.
 | `enabled`  | `false` to turn off Telegram alerts while keeping settings |
 | `botToken` | Bot token from [@BotFather](https://t.me/BotFather) |
 | `chatId`   | Chat to send to (get yours from [@userinfobot](https://t.me/userinfobot)) |
+
+`ntfy` (also settable via `.env` as a fallback):
+
+| Key       | Description                                          |
+| --------- | ---------------------------------------------------- |
+| `enabled` | `false` to turn off ntfy alerts while keeping settings |
+| `server`  | ntfy server URL (defaults to `https://ntfy.sh`)      |
+| `topic`   | Topic to publish to (subscribe to it in the ntfy app) |
+| `token`   | Optional access token for protected topics/servers   |
 
 Each `query` supports:
 

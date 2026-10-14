@@ -117,6 +117,42 @@
 
       <section class="panel">
         <div class="panel-head">
+          <h2>ntfy push</h2>
+          <div class="form-actions">
+            <button id="test-ntfy" class="secondary">Send test message</button>
+          </div>
+        </div>
+        <p class="hint">
+          Send push notifications to your phone via
+          <a href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a> or a
+          self-hosted ntfy server. Install the ntfy app and subscribe to a topic, then
+          enter that topic below.
+        </p>
+        <label class="toggle-label">
+          <input id="n-enabled" type="checkbox" class="inline-check" />
+          Enable ntfy notifications
+        </label>
+        <div class="grid">
+          <label>
+            Server
+            <input id="n-server" placeholder="https://ntfy.sh" />
+          </label>
+          <label>
+            Topic
+            <input id="n-topic" placeholder="your-topic" />
+          </label>
+          <label>
+            Access token (optional)
+            <input id="n-token" type="password" autocomplete="new-password" placeholder="leave blank to keep current" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <span id="ntfy-result"></span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
           <h2></h2>
           <button id="save-settings" class="primary">Save settings</button>
         </div>

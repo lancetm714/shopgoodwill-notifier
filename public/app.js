@@ -32,6 +32,7 @@ function renderStatus() {
   if (o.nextCheckAt) parts.push(`Next: ${fmtTime(o.nextCheckAt)}`);
   parts.push(`Email: ${o.smtpConfigured ? "on" : "off"}`);
   parts.push(`Telegram: ${o.telegramConfigured ? "on" : "off"}`);
+  parts.push(`ntfy: ${o.ntfyConfigured ? "on" : "off"}`);
   detail.textContent = parts.join(" · ");
 
   toggle.textContent = o.running ? "Pause" : "Resume";

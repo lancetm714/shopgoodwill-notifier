@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type {
   AppConfig,
+  NtfySettings,
   QueryConfig,
   SmtpSettings,
   TelegramSettings,
@@ -37,6 +38,7 @@ function applyDefaults(raw: Record<string, unknown>): AppConfig {
       (raw.historyFile as string | undefined) ?? "data/history.json",
     smtp: (raw.smtp as SmtpSettings | undefined) ?? {},
     telegram: (raw.telegram as TelegramSettings | undefined) ?? {},
+    ntfy: (raw.ntfy as NtfySettings | undefined) ?? {},
     queries,
   };
 }
@@ -89,6 +91,7 @@ export class ConfigManager {
     maxPages?: number;
     smtp?: SmtpSettings;
     telegram?: TelegramSettings;
+    ntfy?: NtfySettings;
   }): void {
     if (settings.pollIntervalSeconds !== undefined) {
       this.config.pollIntervalSeconds = settings.pollIntervalSeconds;
@@ -104,6 +107,9 @@ export class ConfigManager {
     }
     if (settings.telegram !== undefined) {
       this.config.telegram = settings.telegram;
+    }
+    if (settings.ntfy !== undefined) {
+      this.config.ntfy = settings.ntfy;
     }
     this.save();
   }

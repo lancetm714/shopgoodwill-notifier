@@ -30,6 +30,14 @@ async function loadSettings() {
     ? "•••• (set — leave blank to keep)"
     : "not set";
   document.getElementById("t-chatId").value = s.telegram.chatId || "";
+
+  document.getElementById("n-enabled").checked = s.ntfy.enabled !== false;
+  document.getElementById("n-server").value = s.ntfy.server || "";
+  document.getElementById("n-topic").value = s.ntfy.topic || "";
+  document.getElementById("n-token").value = "";
+  document.getElementById("n-token").placeholder = s.ntfy.tokenSet
+    ? "•••• (set — leave blank to keep)"
+    : "not set";
 }
 
 function readSmtpForm() {
@@ -53,6 +61,15 @@ function readTelegramForm() {
   };
 }
 
+function readNtfyForm() {
+  return {
+    enabled: document.getElementById("n-enabled").checked,
+    server: document.getElementById("n-server").value.trim(),
+    topic: document.getElementById("n-topic").value.trim(),
+    token: document.getElementById("n-token").value.trim(),
+  };
+}
+
 async function saveSettings() {
   const payload = {
     pollIntervalSeconds: Number(document.getElementById("s-interval").value),
@@ -60,6 +77,7 @@ async function saveSettings() {
     maxPages: Number(document.getElementById("s-maxPages").value),
     smtp: readSmtpForm(),
     telegram: readTelegramForm(),
+    ntfy: readNtfyForm(),
   };
   try {
     await api("/api/settings", { method: "PUT", body: JSON.stringify(payload) });
@@ -113,11 +131,29 @@ async function testTelegram() {
   }
 }
 
+async function testNtfy() {
+  setResult("ntfy-result", "", "Sending test message…");
+  try {
+    const result = await api("/api/ntfy/test", {
+      method: "POST",
+      body: JSON.stringify({ ntfy: readNtfyForm() }),
+    });
+    setResult(
+      "ntfy-result",
+      result.ok ? "ok" : "err",
+      result.ok ? "✓ Test message sent" : "✗ " + result.error,
+    );
+  } catch (err) {
+    setResult("ntfy-result", "err", "✗ " + err.message);
+  }
+}
+
 function wire() {
   document.getElementById("save-settings").addEventListener("click", saveSettings);
   document.getElementById("test-smtp").addEventListener("click", testSmtp);
   document.getElementById("test-email").addEventListener("click", sendTestEmail);
   document.getElementById("test-telegram").addEventListener("click", testTelegram);
+  document.getElementById("test-ntfy").addEventListener("click", testNtfy);
 }
 
 async function init() {

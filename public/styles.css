@@ -360,16 +360,19 @@ input:focus {
 }
 
 #smtp-result,
-#telegram-result {
+#telegram-result,
+#ntfy-result {
   font-size: 13px;
 }
 
 #smtp-result.ok,
-#telegram-result.ok {
+#telegram-result.ok,
+#ntfy-result.ok {
   color: var(--ok);
 }
 
 #smtp-result.err,
-#telegram-result.err {
+#telegram-result.err,
+#ntfy-result.err {
   color: var(--danger);
 }

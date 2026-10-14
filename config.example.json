@@ -19,6 +19,12 @@
     "botToken": "123456:ABC-your-bot-token",
     "chatId": "123456789"
   },
+  "ntfy": {
+    "enabled": true,
+    "server": "https://ntfy.sh",
+    "topic": "your-ntfy-topic",
+    "token": ""
+  },
   "queries": [
     {
       "name": "canon-film-cameras",

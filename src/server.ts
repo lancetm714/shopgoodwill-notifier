@@ -9,8 +9,10 @@ import { HistoryStore } from "./historyStore.js";
 import { Monitor } from "./monitor.js";
 import { verifySmtp, sendTestEmail } from "./notifier.js";
 import { sendTestTelegram } from "./telegram.js";
+import { sendTestNtfy } from "./ntfy.js";
 import type {
   AppConfig,
+  NtfySettings,
   QueryConfig,
   SmtpSettings,
   TelegramSettings,
@@ -104,6 +106,16 @@ function maskedTelegram(tg: TelegramSettings): Record<string, unknown> {
   };
 }
 
+function maskedNtfy(ntfy: NtfySettings): Record<string, unknown> {
+  return {
+    server: ntfy.server ?? "https://ntfy.sh",
+    topic: ntfy.topic ?? "",
+    token: "",
+    tokenSet: Boolean(ntfy.token),
+    enabled: ntfy.enabled !== false,
+  };
+}
+
 function resolveTestConfig(body: unknown): AppConfig {
   const { smtp } = (body ?? {}) as { smtp?: SmtpSettings };
   const current = manager.get();
@@ -143,6 +155,25 @@ function resolveTelegramTestConfig(body: unknown): AppConfig {
     enabled: true,
   };
   return { ...current, telegram: merged };
+}
+
+function resolveNtfyTestConfig(body: unknown): AppConfig {
+  const { ntfy } = (body ?? {}) as { ntfy?: NtfySettings };
+  const current = manager.get();
+  if (!ntfy) {
+    return current;
+  }
+  const currentNtfy = current.ntfy ?? {};
+  const merged: NtfySettings = {
+    server: ntfy.server ?? currentNtfy.server,
+    topic: ntfy.topic ?? currentNtfy.topic,
+    token:
+      typeof ntfy.token === "string" && ntfy.token.trim() !== ""
+        ? ntfy.token
+        : currentNtfy.token,
+    enabled: true,
+  };
+  return { ...current, ntfy: merged };
 }
 
 app.get(
@@ -210,6 +241,7 @@ app.get(
       maxPages: config.maxPages,
       smtp: maskedSmtp(config.smtp ?? {}),
       telegram: maskedTelegram(config.telegram ?? {}),
+      ntfy: maskedNtfy(config.ntfy ?? {}),
     });
   }),
 );
@@ -248,6 +280,18 @@ app.put(
       enabled: telegramIn.enabled ?? currentTg.enabled,
     };
 
+    const ntfyIn = (body.ntfy ?? {}) as NtfySettings;
+    const currentNtfy = current.ntfy ?? {};
+    const ntfy: NtfySettings = {
+      server: ntfyIn.server ?? currentNtfy.server,
+      topic: ntfyIn.topic ?? currentNtfy.topic,
+      token:
+        typeof ntfyIn.token === "string" && ntfyIn.token.trim() !== ""
+          ? ntfyIn.token
+          : currentNtfy.token,
+      enabled: ntfyIn.enabled ?? currentNtfy.enabled,
+    };
+
     manager.setSettings({
       pollIntervalSeconds:
         typeof body.pollIntervalSeconds === "number"
@@ -257,6 +301,7 @@ app.put(
       maxPages: typeof body.maxPages === "number" ? body.maxPages : undefined,
       smtp,
       telegram,
+      ntfy,
     });
 
     const saved = manager.get();
@@ -266,6 +311,7 @@ app.put(
       maxPages: saved.maxPages,
       smtp: maskedSmtp(saved.smtp ?? {}),
       telegram: maskedTelegram(saved.telegram ?? {}),
+      ntfy: maskedNtfy(saved.ntfy ?? {}),
     });
   }),
 );
@@ -291,6 +337,17 @@ app.post(
   asyncHandler(async (req, res) => {
     const result = await sendTestTelegram(
       resolveTelegramTestConfig(req.body),
+      process.env,
+    );
+    res.json(result);
+  }),
+);
+
+app.post(
+  "/api/ntfy/test",
+  asyncHandler(async (req, res) => {
+    const result = await sendTestNtfy(
+      resolveNtfyTestConfig(req.body),
       process.env,
     );
     res.json(result);

@@ -5,6 +5,7 @@ import { SeenStore } from "./seenStore.js";
 import { HistoryStore } from "./historyStore.js";
 import { buildNotifier, resolveSmtp } from "./notifier.js";
 import { buildTelegramNotifier, resolveTelegram } from "./telegram.js";
+import { buildNtfyNotifier, resolveNtfy } from "./ntfy.js";
 import type {
   AppConfig,
   HistoryEntry,
@@ -22,6 +23,7 @@ export interface MonitorOverview {
   pollIntervalSeconds: number;
   smtpConfigured: boolean;
   telegramConfigured: boolean;
+  ntfyConfigured: boolean;
   queries: QueryStatus[];
 }
 
@@ -81,6 +83,7 @@ export class Monitor {
       pollIntervalSeconds: config.pollIntervalSeconds,
       smtpConfigured: resolveSmtp(config, this.env) !== null,
       telegramConfigured: resolveTelegram(config, this.env) !== null,
+      ntfyConfigured: resolveNtfy(config, this.env) !== null,
       queries: config.queries.map((q) => this.statusFor(q)),
     };
   }
@@ -102,6 +105,8 @@ export class Monitor {
     if (email) notifiers.push(email);
     const telegram = buildTelegramNotifier(config, this.env);
     if (telegram) notifiers.push(telegram);
+    const ntfy = buildNtfyNotifier(config, this.env);
+    if (ntfy) notifiers.push(ntfy);
     try {
       for (const query of config.queries) {
         await this.checkQuery(query, config, notifiers);

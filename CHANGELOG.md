@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- ntfy push notifications, configurable from the web console (Settings page),
+  `config.json`, or `.env`. Supports custom servers (including self-hosted ntfy)
+  and optional access tokens, with a send-test-message action.
+
 ## [1.0.0] - 2026-10-14
 
 ### Added
